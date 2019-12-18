@@ -3,18 +3,18 @@ package main
 import (
     "fmt"
     "github.com/StefanTruong/email-service/db"
+    "github.com/StefanTruong/email-service/env"
     "log"
     "net/http"
 )
 
 func main() {
-    conn, err := db.Connect(db.Options{
-        Host:     "/var/run/postgresql",
-        Port:     5432,
-        User:     "stefan",
-        Database: "email_service",
-    })
+    e, err := env.Parse()
+    if err != nil {
+        log.Fatal(err)
+    }
 
+    conn, err := db.Connect(e)
     defer conn.Close()
 
     if err != nil {

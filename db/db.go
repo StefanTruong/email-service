@@ -3,30 +3,14 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"github.com/StefanTruong/email-service/env"
 	_ "github.com/lib/pq"
 )
 
-// Options for the postgres database connection
-type Options struct {
-	// Host name of the database
-	Host string
-
-	// Port of the postgres database
-	Port int
-
-	// User to use for the connection
-	User string
-	// Password of the user
-	// Password string
-
-	// Database to connect to
-	Database string
-}
-
-func Connect(opts Options) (*sql.DB, error) {
+func Connect(opts env.Env) (*sql.DB, error) {
 	// Creating a ConnectionString
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable",
-		opts.Host, opts.Port, opts.User, opts.Database)
+		opts.Hostname, opts.Port, opts.User, opts.Database)
 
 	// open a connection to database
 	db, err := sql.Open("postgres", psqlInfo)
