@@ -1,10 +1,8 @@
 package main
 
 import (
-    "database/sql"
     "fmt"
     "github.com/StefanTruong/email-service/db"
-    _ "github.com/lib/pq"
     "log"
     "net/http"
 )

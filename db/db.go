@@ -3,7 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"log"
+	_ "github.com/lib/pq"
 )
 
 // Options for the postgres database connection
@@ -27,8 +27,18 @@ func Connect(opts Options) (*sql.DB, error) {
 	// Creating a ConnectionString
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable",
 		opts.Host, opts.Port, opts.User, opts.Database)
-	log.Println(psqlInfo)
 
 	// open a connection to database
-	return sql.Open("postgres", psqlInfo)
+	db, err := sql.Open("postgres", psqlInfo)
+
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = db.Exec("SELECT current_date")
+	if err != nil {
+		return nil, fmt.Errorf("failed test exec: %w", err)
+	}
+
+	return db, nil
 }
