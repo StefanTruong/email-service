@@ -1,12 +1,34 @@
 package main
 
 import (
+    "database/sql"
     "fmt"
+    "github.com/StefanTruong/email-service/db"
+    _ "github.com/lib/pq"
     "log"
     "net/http"
 )
 
 func main() {
+    conn, err := db.Connect(db.Options{
+        Host:     "/var/run/postgresql",
+        Port:     5432,
+        User:     "stefan",
+        Database: "email_service",
+    })
+
+    defer conn.Close()
+
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // insert data into emails table (which already exists)
+    _, err = conn.Exec("INSERT INTO emails (user_id, email, created_at) VALUES ('stefan', 'stefan.truong@gmail.com', current_date);")
+    if err != nil {
+        log.Fatal(err);
+    }
+    // HTTP HandlerFunction
     http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
         log.Printf("request %s /", r.Method)
         if r.Method == "POST" {
@@ -34,7 +56,7 @@ func main() {
         fmt.Fprint(w, "Cool! You accessed /add")
     })
 
-    err := http.ListenAndServe(":8080", nil)
+    err = http.ListenAndServe(":8080", nil)
     if err != nil {
         log.Fatal(err)
     }
