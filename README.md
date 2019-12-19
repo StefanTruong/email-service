@@ -24,7 +24,7 @@ CREATE DATABASE email_service OWNER stefan
 
 Quit the postgres CLI
 ```
-/q
+\q
 ```
 
 Connect to the database with the new user
